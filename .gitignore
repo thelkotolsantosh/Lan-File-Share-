@@ -1,0 +1,60 @@
+# Python related
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.sublime-project
+*.sublime-workspace
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Environment variables
+.env
+.env.local
+
+# Shared files (uploaded files - optional)
+# Uncomment the line below to exclude shared files from git
+# shared_files/
+
+# Temporary files
+*.tmp
+*.bak
+*.log
+
+# OS specific
+.DS_Store
+Thumbs.db
+
+# Flask instance
+instance/
+.webassets-cache
