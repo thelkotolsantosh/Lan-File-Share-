@@ -1,0 +1,360 @@
+# 🚀 CI/CD Setup Guide
+
+This guide explains how to set up automated testing and deployment using GitHub Actions.
+
+## What is CI/CD?
+
+**CI (Continuous Integration)**: Automatically run tests when you push code
+**CD (Continuous Deployment)**: Automatically deploy code when tests pass
+
+---
+
+## Setting Up GitHub Actions
+
+### Step 1: Create Workflows Directory
+
+1. In your GitHub repository root
+2. Create `.github/workflows/` directory
+3. Create `python-tests.yml` file
+
+### Step 2: Add Workflow File
+
+Create `.github/workflows/python-tests.yml`:
+
+```yaml
+name: Python Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        python-version: ['3.8', '3.9', '3.10', '3.11']
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements-dev.txt
+    
+    - name: Lint with flake8
+      run: |
+        flake8 app.py config.py test_app.py
+    
+    - name: Format check with black
+      run: |
+        black --check app.py config.py test_app.py
+    
+    - name: Run tests
+      run: |
+        pytest test_app.py -v --cov=.
+    
+    - name: Upload coverage
+      uses: codecov/codecov-action@v3
+      with:
+        files: ./coverage.xml
+        fail_ci_if_error: true
+```
+
+### Step 3: Commit and Push
+
+```bash
+git add .github/workflows/python-tests.yml
+git commit -m "Add GitHub Actions CI/CD"
+git push
+```
+
+### Step 4: Check Status
+
+1. Go to your GitHub repository
+2. Click "Actions" tab
+3. See your workflow run!
+
+---
+
+## Workflow Explanation
+
+### Triggers
+```yaml
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+```
+
+Runs when:
+- Someone pushes to `main` or `develop`
+- Someone creates a Pull Request to `main` or `develop`
+
+### Matrix Testing
+```yaml
+strategy:
+  matrix:
+    python-version: ['3.8', '3.9', '3.10', '3.11']
+```
+
+Tests your code on multiple Python versions:
+- Python 3.8
+- Python 3.9
+- Python 3.10
+- Python 3.11
+
+### Steps
+Each step runs a command:
+1. **Checkout** - Get your code
+2. **Setup Python** - Install Python version
+3. **Install dependencies** - Run `pip install`
+4. **Lint** - Check code style
+5. **Format** - Check formatting
+6. **Test** - Run unit tests
+7. **Upload** - Send coverage report
+
+---
+
+## Additional Workflows
+
+### Security Scanning
+
+Create `.github/workflows/security.yml`:
+
+```yaml
+name: Security Scan
+
+on: [push, pull_request]
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        pip install bandit safety
+    
+    - name: Run Bandit security check
+      run: |
+        bandit -r . -ll
+    
+    - name: Check dependencies with Safety
+      run: |
+        safety check
+```
+
+### Auto-formatting
+
+Create `.github/workflows/auto-format.yml`:
+
+```yaml
+name: Auto Format Code
+
+on:
+  push:
+    branches: [ develop ]
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install black
+      run: pip install black
+    
+    - name: Format code
+      run: black app.py config.py test_app.py
+    
+    - name: Commit changes
+      run: |
+        git config user.name "GitHub Action"
+        git config user.email "action@github.com"
+        git add .
+        git commit -m "Auto-format code" || true
+        git push
+```
+
+---
+
+## Status Badge
+
+Add this to your `README.md` to show build status:
+
+```markdown
+[![Python Tests](https://github.com/yourusername/lan-file-share/actions/workflows/python-tests.yml/badge.svg)](https://github.com/yourusername/lan-file-share/actions/workflows/python-tests.yml)
+```
+
+---
+
+## Best Practices
+
+1. **Keep workflows simple** - One job per workflow
+2. **Use caching** - Speed up dependency installation
+3. **Test on multiple versions** - Catch compatibility issues
+4. **Fail fast** - Stop on first error
+5. **Document steps** - Explain what each step does
+6. **Use secrets** - For API keys and credentials
+
+### Adding Secrets
+
+1. Go to repository Settings
+2. Click "Secrets and variables"
+3. Click "New repository secret"
+4. Add your secret
+5. Use in workflow:
+
+```yaml
+- name: Deploy
+  env:
+    API_KEY: ${{ secrets.API_KEY }}
+  run: ./deploy.sh
+```
+
+---
+
+## Troubleshooting
+
+### Workflow Not Triggering
+
+- ❌ Check branch name matches
+- ❌ Check file path: `.github/workflows/name.yml`
+- ❌ Check YAML syntax (proper indentation)
+
+### Tests Failing in CI
+
+- Check Python version compatibility
+- Ensure all dependencies in `requirements.txt`
+- Look at test output in workflow logs
+
+### Permission Issues
+
+If you see permission errors:
+
+```yaml
+- name: Make script executable
+  run: chmod +x ./script.sh
+```
+
+---
+
+## Resources
+
+- [GitHub Actions Docs](https://docs.github.com/en/actions)
+- [Workflow Syntax](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions)
+- [Marketplace Actions](https://github.com/marketplace/actions)
+- [pytest Documentation](https://docs.pytest.org/)
+
+---
+
+## Example Complete Workflow
+
+Here's a complete, production-ready workflow:
+
+```yaml
+name: Complete CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.10', '3.11']
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Cache pip packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements-dev.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements-dev.txt
+    
+    - name: Lint with flake8
+      run: flake8 app.py config.py test_app.py --count --statistics
+    
+    - name: Format check with black
+      run: black --check app.py config.py test_app.py
+    
+    - name: Type check with mypy
+      run: mypy app.py config.py
+      continue-on-error: true
+    
+    - name: Run tests with pytest
+      run: pytest test_app.py -v --cov=. --cov-report=xml
+    
+    - name: Upload coverage
+      uses: codecov/codecov-action@v3
+      with:
+        files: ./coverage.xml
+        flags: unittests
+        fail_ci_if_error: false
+
+  security:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install security tools
+      run: pip install bandit safety
+    
+    - name: Bandit security scan
+      run: bandit -r . -ll
+      continue-on-error: true
+```
+
+---
+
+**That's it!** Your project now has automated testing and quality checks! 🎉
+
+Questions? Check the [GitHub Actions documentation](https://docs.github.com/en/actions).
