@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  lan-file-share:
+    build: .
+    container_name: lan-file-share
+    ports:
+      - "5000:5000"
+    volumes:
+      # Map the shared_files directory to persist files
+      - ./shared_files:/app/shared_files
+    environment:
+      - FLASK_ENV=production
+      - FLASK_DEBUG=False
+    networks:
+      - lan-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
+networks:
+  lan-network:
+    driver: bridge
