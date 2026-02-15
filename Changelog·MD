@@ -1,0 +1,98 @@
+# Changelog
+All notable changes to this project are documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [1.0.0] - 2024-01-15
+### Added
+- ✨ Initial release of LAN File Share
+- 📤 File upload functionality
+- ⬇️ File download functionality
+- 🗑️ File deletion functionality
+- 🎨 Beautiful web interface
+- 📱 Responsive design for mobile devices
+- 🌐 Cross-device file sharing on LAN
+- 💾 Persistent file storage
+- 📊 File statistics and metadata display
+- 🔒 Secure file handling with validation
+- 📝 Comprehensive documentation
+- 🚀 Startup scripts for Windows, macOS, and Linux
+- 🧪 Unit tests for main functionality
+- 🔧 Configuration management system
+
+### Features
+- Drag and drop file upload
+- Large file support (up to 500MB)
+- Multiple file type support
+- File size and date display
+- Mobile-responsive design
+- Dark mode compatible interface
+- Error handling and user feedback
+
+## [Upcoming]
+
+### Planned Features
+- 🔐 Password protection
+- 📊 Upload/download statistics
+- 🏷️ File categorization and tagging
+- 🔍 File search functionality
+- 👥 Multi-user accounts
+- 📈 Activity logging
+- 🎯 File filtering and sorting
+- 📁 Folder support
+- 🔄 Batch operations
+- 🌍 Multi-language support
+
+### Under Consideration
+- Mobile app (Android/iOS)
+- Desktop app (Electron)
+- Database integration
+- Advanced security features
+- API endpoint documentation
+- Docker support
+- Kubernetes deployment
+
+---
+
+## Version History
+
+### 1.0.0
+**Release Date:** January 15, 2024
+- First stable release
+- All core features implemented
+- Full documentation and testing
+
+---
+
+## Guidelines
+
+### Semantic Versioning
+We follow Semantic Versioning (MAJOR.MINOR.PATCH):
+- **MAJOR**: Breaking changes
+- **MINOR**: New features (backward compatible)
+- **PATCH**: Bug fixes
+
+### How to Report Issues
+1. Check existing issues first
+2. Provide clear description
+3. Include reproduction steps
+4. Share your environment info
+
+### How to Request Features
+1. Open a new issue
+2. Label it as "enhancement"
+3. Describe the feature
+4. Explain the use case
+
+---
+
+## Contributing
+Want to help improve LAN File Share?
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+---
+
+## License
+This changelog is part of the [LAN File Share](https://github.com/thelkotolsantosh/lan-file-share) project,
+licensed under the MIT License.
